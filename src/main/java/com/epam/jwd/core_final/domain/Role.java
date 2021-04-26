@@ -24,14 +24,30 @@ public enum Role implements BaseEntity {
      */
     @Override
     public String getName() {
-        return null;
+        return this.getName();
     }
 
     /**
      * todo via java.lang.enum methods!
      * @throws UnknownEntityException if such id does not exist
      */
-    public static Role resolveRoleById(int id) {
-        return null;
+    public static Role resolveRoleById(Integer id) {
+
+    	switch (id) {
+    		case 1:
+    			return MISSION_SPECIALIST;
+    			
+    		case 2:
+    			return FLIGHT_ENGINEER;
+    			
+    		case 3:
+    			return PILOT;
+    			
+    		case 4:
+    			return COMMANDER;
+    		default:
+    			throw new UnknownEntityException("Required role does not exist!"); 
+    	}
+    	
     }
 }
