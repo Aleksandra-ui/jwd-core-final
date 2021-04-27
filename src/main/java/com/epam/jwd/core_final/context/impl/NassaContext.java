@@ -9,6 +9,8 @@ import com.epam.jwd.core_final.domain.Rank;
 import com.epam.jwd.core_final.domain.Role;
 import com.epam.jwd.core_final.domain.Spaceship;
 import com.epam.jwd.core_final.exception.InvalidStateException;
+import com.epam.jwd.core_final.factory.impl.CrewMemberFactory;
+import com.epam.jwd.core_final.factory.impl.SpaceshipFactory;
 import com.epam.jwd.core_final.util.PropertyReaderUtil;
 
 import java.io.IOException;
@@ -28,6 +30,10 @@ public class NassaContext implements ApplicationContext {
 	private Collection<CrewMember> crewMembers = new ArrayList<>();
 	private Collection<Spaceship> spaceships = new ArrayList<>();
 	private Collection<Planet> planetMap = new ArrayList<>();
+
+	private CrewMemberFactory crewMemberFactory = CrewMemberFactory.INSTANCE;
+	private SpaceshipFactory spaceshipFactory = SpaceshipFactory.INSTANCE;
+
 	private static NassaContext instance;
 
 	private NassaContext() {
@@ -42,6 +48,18 @@ public class NassaContext implements ApplicationContext {
 
 	@Override
 	public <T extends BaseEntity> Collection<T> retrieveBaseEntityList(Class<T> tClass) {
+		if (tClass == crewMembers.getClass()) {
+			return (Collection<T>) crewMembers;
+		} 
+		
+		if (tClass == spaceships.getClass()) {
+			return (Collection<T>) spaceships;
+		} 
+		
+		if (tClass == planetMap.getClass()) {
+			return (Collection<T>) planetMap;
+		} 
+		
 		return null;
 	}
 
@@ -57,11 +75,11 @@ public class NassaContext implements ApplicationContext {
 
 		readCrew(inputDir);
 		readShips(inputDir);
-		System.out.println(spaceships);
+		
 
 	}
 
-	private void readCrew(String inputDir) {
+	private void readCrew(String inputDir) throws NumberFormatException, InvalidStateException {
 
 		String crewFileName = ApplicationProperties.getInstance().getCrewFileName();
 		long i = 1;
@@ -76,8 +94,8 @@ public class NassaContext implements ApplicationContext {
 			for (String member : members) {
 				Scanner sc = new Scanner(member);
 				sc.useDelimiter(",");
-				crewMembers.add(new CrewMember(i++, Role.resolveRoleById(Integer.valueOf(sc.next())), sc.next(),
-						Rank.resolveRankById(Integer.valueOf(sc.next()))));
+				crewMembers.add(crewMemberFactory.create(i++, Integer.valueOf(sc.next()), sc.next(),
+						Integer.valueOf(sc.next())));
 
 			}
 
@@ -86,54 +104,9 @@ public class NassaContext implements ApplicationContext {
 		}
 
 	}
-	
-	/*private void readShips(String inputDir) {
 
-		String shipsFileName = ApplicationProperties.getInstance().getSpaceshipsFileName();
-		long id = 1;
-		String name;
-		Scanner word;
-		Spaceship spaceship;
-
-		try {
-			String ships = new String(Files.readAllBytes(Paths.get(inputDir + "/" + shipsFileName)),
-					StandardCharsets.UTF_8);
-			Scanner line = new Scanner(ships);
-			line.nextLine();
-			line.nextLine();
-			line.nextLine();
-			//System.out.println(line.nextLine());
-			String ship = line.nextLine();
-			
-			while ( line.hasNextLine() ) {
-				word = new Scanner(ship);
-				word.useDelimiter(";");
-				name = word.next();
-				Long dist = word.nextLong();
-				String crew = word.next();
-				crew = crew.substring(1, crew.length()-1);
-				String[] members = crew.split(",");
-				Map<Role,Short> crew2= new HashMap<>();
-				for (String member : members) {
-					crew2.put(Role.resolveRoleById(Integer.valueOf(member.substring(0, 1))), Short.valueOf(member.substring(2, 3)));
-				spaceship=new Spaceship( id++, name, crew2, dist);
-				spaceships.add(spaceship);
-				if (line.hasNextLine()) {
-					ship = line.nextLine();
-					System.out.println(ship);
-				}
-			}
-
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}*/
-	
 	private void readShips(String inputDir) {
-		
+
 		String shipsFileName = ApplicationProperties.getInstance().getSpaceshipsFileName();
 		long id = 1;
 		String name;
@@ -142,7 +115,7 @@ public class NassaContext implements ApplicationContext {
 		String[] members;
 		Map<Role, Short> crew;
 		Spaceship spaceship;
-		
+
 		try {
 			String ships = new String(Files.readAllBytes(Paths.get(inputDir + "/" + shipsFileName)),
 					StandardCharsets.UTF_8);
@@ -150,21 +123,25 @@ public class NassaContext implements ApplicationContext {
 			line.nextLine();
 			line.nextLine();
 			line.nextLine();
-			//System.out.println(line.nextLine());
 			String ship = line.nextLine();
-			
-			while ( line.hasNextLine() ) {
+
+			while (line.hasNextLine()) {
 				String[] charasteristics = ship.split(";");
 				name = charasteristics[0];
 				distance = Long.valueOf(charasteristics[1]);
 				members = charasteristics[2].substring(1, charasteristics[2].length() - 1).split(",");
 				crew = new HashMap<>();
-				for ( String member: members ) {
-					crew.put(Role.resolveRoleById(Integer.valueOf(member.substring(0, 1))), Short.valueOf(member.substring(2, 3)) );
+				for (String member : members) {
+					crew.put(Role.resolveRoleById(Integer.valueOf(member.substring(0, 1))),
+							Short.valueOf(member.substring(2, 3)));
 				}
-				spaceship = new Spaceship(id++, name, crew, distance);
-				spaceships.add(spaceship);
-				
+				try {
+					spaceship = spaceshipFactory.create(id++, name, crew, distance);
+					spaceships.add(spaceship);
+				} catch (InvalidStateException e) {
+					e.printStackTrace();
+				}
+
 				ship = line.nextLine();
 				System.out.println(ship);
 			}
@@ -173,17 +150,30 @@ public class NassaContext implements ApplicationContext {
 			distance = Long.valueOf(charasteristics[1]);
 			members = charasteristics[2].substring(1, charasteristics[2].length() - 1).split(",");
 			crew = new HashMap<>();
-			for ( String member: members ) {
-				crew.put(Role.resolveRoleById(Integer.valueOf(member.substring(0, 1))), Short.valueOf(member.substring(2, 3)) );
+			for (String member : members) {
+				crew.put(Role.resolveRoleById(Integer.valueOf(member.substring(0, 1))),
+						Short.valueOf(member.substring(2, 3)));
 			}
 			spaceship = new Spaceship(id++, name, crew, distance);
 			spaceships.add(spaceship);
 
+		} catch (IOException e) {
+			e.printStackTrace();
 
+		}
+
+	}
+
+	private void readPlanets(String inputDir) {
+
+		String spacemapFileName = ApplicationProperties.getInstance().getSpacemapFileName();
+
+		try {
+			String planets = new String(Files.readAllBytes(Paths.get(inputDir + "/" + spacemapFileName)),
+					StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 }

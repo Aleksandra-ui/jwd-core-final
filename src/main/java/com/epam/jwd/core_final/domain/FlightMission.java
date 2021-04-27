@@ -20,12 +20,13 @@ public class FlightMission extends AbstractBaseEntity {
     
 	private final LocalDate startDate;
 	private final LocalDate endDate;
-	private final long missionsDistance;
+	private final Long missionsDistance;
 	private final Spaceship assignedSpaceShip;
 	private final List<CrewMember> assignedCrew;
 	private final MissionResult missionResult;
 	private final Planet from;
 	private final Planet to;
+	
 	public FlightMission(Long id, String name, LocalDate startDate, LocalDate endDate, long missionsDistance,
 			Spaceship assignedSpaceShip, List<CrewMember> assignedCrew, MissionResult missionResult, Planet from,
 			Planet to) {

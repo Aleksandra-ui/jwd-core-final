@@ -39,9 +39,10 @@ public final class PropertyReaderUtil {
 		String spaceshipsFileName=properties.getProperty("spaceshipsFileName");
 		Integer fileRefreshRate=Integer.valueOf(properties.getProperty("fileRefreshRate"));
 		String dateTimeFormat=properties.getProperty("dateTimeFormat");
+		String spacemapFileName=properties.getProperty("spacemapFileName");
 		
 		ApplicationProperties.newInstance(inputRootDir,outputRootDir,crewFileName,missionsFileName,
-				spaceshipsFileName,fileRefreshRate,dateTimeFormat);
+				spaceshipsFileName,fileRefreshRate,dateTimeFormat,spacemapFileName);
 
 	}
 }
