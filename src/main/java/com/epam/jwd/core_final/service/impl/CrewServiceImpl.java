@@ -10,8 +10,10 @@ import com.epam.jwd.core_final.criteria.Criteria;
 import com.epam.jwd.core_final.domain.CrewMember;
 import com.epam.jwd.core_final.service.CrewService;
 
-public class CrewServiceImpl implements CrewService {
+public enum CrewServiceImpl implements CrewService {
 
+	INSTANCE;
+	
 	ApplicationContext context = NassaContext.newInstance();
 
 	@Override
@@ -29,14 +31,15 @@ public class CrewServiceImpl implements CrewService {
 
 	@Override
 	public Optional<CrewMember> findCrewMemberByCriteria(Criteria<? extends CrewMember> criteria) {
-		// TODO Auto-generated method stub
-		return null;
+		List<CrewMember> crewMembers = findAllCrewMembers();
+		Optional<CrewMember> crewMember = (Optional<CrewMember>) criteria.find().findAny();
+		return crewMember;
 	}
 
 	@Override
 	public CrewMember updateCrewMemberDetails(CrewMember crewMember) {
-		// TODO Auto-generated method stub
-		return null;
+		crewMember.setIsReadyForNextMissions(false);;
+		return crewMember;
 	}
 
 	@Override

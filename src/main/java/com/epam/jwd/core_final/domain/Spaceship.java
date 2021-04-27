@@ -3,9 +3,9 @@ package com.epam.jwd.core_final.domain;
 import java.util.Map;
 
 /**
- * crew {@link java.util.Map<Role, Short>}
- * flightDistance {@link Long} - total available flight distance
- * isReadyForNextMissions {@link Boolean} - true by default. Set to false, after first failed mission
+ * crew {@link java.util.Map<Role, Short>} flightDistance {@link Long} - total
+ * available flight distance isReadyForNextMissions {@link Boolean} - true by
+ * default. Set to false, after first failed mission
  */
 
 //field Crew:map <Role,NumOfPeople>
@@ -14,9 +14,10 @@ public class Spaceship extends AbstractBaseEntity {
 	private final Map<Role, Short> crew;
 	private final Long flightDistance;
 	private Boolean isReadyForNextMissions = true;
-	
+
 	public Spaceship(Long id, String name, Map<Role, Short> crew, Long flightDistance) {
-		super(id, name);
+		super(name);
+		setId(id);
 		this.crew = crew;
 		this.flightDistance = flightDistance;
 	}
@@ -32,8 +33,8 @@ public class Spaceship extends AbstractBaseEntity {
 	public Boolean getIsReadyForNextMissions() {
 		return isReadyForNextMissions;
 	}
-	
-	public void setIsReadyForNextMissions(Boolean IsReadyForNextMissions ) {
+
+	public void setIsReadyForNextMissions(Boolean IsReadyForNextMissions) {
 		this.isReadyForNextMissions = isReadyForNextMissions;
 	}
 
@@ -76,8 +77,8 @@ public class Spaceship extends AbstractBaseEntity {
 
 	@Override
 	public String toString() {
-		return "Spaceship [id=" + getId() + ", name=" + getName() +", crew=" + crew + ", flightDistance=" + flightDistance + ", isReadyForNextMissions="
-				+ isReadyForNextMissions + "]";
+		return "Spaceship [id=" + getId() + ", name=" + getName() + ", crew=" + crew + ", flightDistance="
+				+ flightDistance + ", isReadyForNextMissions=" + isReadyForNextMissions + "]";
 	}
-	
+
 }

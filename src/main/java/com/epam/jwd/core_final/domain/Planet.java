@@ -5,12 +5,13 @@ package com.epam.jwd.core_final.domain;
  * <p>
  * location could be a simple class Point with 2 coordinates
  */
-public class Planet extends AbstractBaseEntity{
+public class Planet extends AbstractBaseEntity {
 
 	private final Point location;
 
 	public Planet(Long id, String name, Point location) {
-		super(id, name);
+		super(name);
+		setId(id);
 		this.location = location;
 	}
 
@@ -47,5 +48,5 @@ public class Planet extends AbstractBaseEntity{
 	public String toString() {
 		return "Planet [location=" + location + "]";
 	}
-	
+
 }

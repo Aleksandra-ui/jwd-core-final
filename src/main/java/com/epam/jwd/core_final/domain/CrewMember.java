@@ -3,18 +3,19 @@ package com.epam.jwd.core_final.domain;
 /**
  * Expected fields:
  * <p>
- * role {@link Role} - member role
- * rank {@link Rank} - member rank
- * isReadyForNextMissions {@link Boolean} - true by default. Set to false, after first failed mission
+ * role {@link Role} - member role rank {@link Rank} - member rank
+ * isReadyForNextMissions {@link Boolean} - true by default. Set to false, after
+ * first failed mission
  */
 public class CrewMember extends AbstractBaseEntity {
-    
+
 	private final Role role;
 	private final Rank rank;
 	private Boolean isReadyForNextMissions = true;
-	
-	public CrewMember(Long id,  Role role,String name, Rank rank) {
-		super(id, name);
+
+	public CrewMember(Long id, Role role, String name, Rank rank) {
+		super(name);
+		setId(id);
 		this.role = role;
 		this.rank = rank;
 	}
@@ -68,8 +69,8 @@ public class CrewMember extends AbstractBaseEntity {
 
 	@Override
 	public String toString() {
-		return "CrewMember [id=" + getId() + ", name=" + getName() + " ,role=" + role + ", rank=" + rank + ", isReadyForNextMissions=" + isReadyForNextMissions
-				+ "]";
+		return "CrewMember [id=" + getId() + ", name=" + getName() + " ,role=" + role + ", rank=" + rank
+				+ ", isReadyForNextMissions=" + isReadyForNextMissions + "]";
 	}
-	
+
 }

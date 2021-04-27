@@ -6,64 +6,75 @@ import java.util.List;
 /**
  * Expected fields:
  * <p>
- * missions name {@link String}
- * start date {@link java.time.LocalDate}
- * end date {@link java.time.LocalDate}
- * distance {@link Long} - missions distance
- * assignedSpaceShift {@link Spaceship} - not defined by default
- * assignedCrew {@link java.util.List<CrewMember>} - list of missions members based on ship capacity - not defined by default
- * missionResult {@link MissionResult}
- * from {@link Planet}
- * to {@link Planet}
+ * missions name {@link String} start date {@link java.time.LocalDate} end date
+ * {@link java.time.LocalDate} distance {@link Long} - missions distance
+ * assignedSpaceShift {@link Spaceship} - not defined by default assignedCrew
+ * {@link java.util.List<CrewMember>} - list of missions members based on ship
+ * capacity - not defined by default missionResult {@link MissionResult} from
+ * {@link Planet} to {@link Planet}
  */
 public class FlightMission extends AbstractBaseEntity {
-    
+
 	private final LocalDate startDate;
 	private final LocalDate endDate;
 	private final Long missionsDistance;
 	private final Spaceship assignedSpaceShip;
-	private final List<CrewMember> assignedCrew;
-	private final MissionResult missionResult;
+	private List<CrewMember> assignedCrew;
+	private MissionResult missionResult;
 	private final Planet from;
 	private final Planet to;
-	
-	public FlightMission(Long id, String name, LocalDate startDate, LocalDate endDate, long missionsDistance,
-			Spaceship assignedSpaceShip, List<CrewMember> assignedCrew, MissionResult missionResult, Planet from,
-			Planet to) {
-		super(id, name);
+
+	public FlightMission(String name, LocalDate startDate, LocalDate endDate, long missionsDistance,
+			Spaceship assignedSpaceShip, Planet from, Planet to) {
+		super(name);
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.missionsDistance = missionsDistance;
 		this.assignedSpaceShip = assignedSpaceShip;
-		this.assignedCrew = assignedCrew;
-		this.missionResult = missionResult;
 		this.from = from;
 		this.to = to;
 	}
+
 	public LocalDate getStartDate() {
 		return startDate;
 	}
+
 	public LocalDate getEndDate() {
 		return endDate;
 	}
+
 	public long getMissionsDistance() {
 		return missionsDistance;
 	}
+
 	public Spaceship getAssignedSpaceShip() {
 		return assignedSpaceShip;
 	}
+
 	public List<CrewMember> getAssignedCrew() {
 		return assignedCrew;
 	}
+
 	public MissionResult getMissionResult() {
 		return missionResult;
 	}
+
 	public Planet getFrom() {
 		return from;
 	}
+
 	public Planet getTo() {
 		return to;
 	}
+
+	public void setAssignedCrew(List<CrewMember> assignedCrew) {
+		this.assignedCrew = assignedCrew;
+	}
+
+	public void setMissionResult(MissionResult missionResult) {
+		this.missionResult = missionResult;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -78,6 +89,7 @@ public class FlightMission extends AbstractBaseEntity {
 		result = prime * result + ((to == null) ? 0 : to.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -123,11 +135,12 @@ public class FlightMission extends AbstractBaseEntity {
 			return false;
 		return true;
 	}
+
 	@Override
 	public String toString() {
 		return "FlightMission [startDate=" + startDate + ", endDate=" + endDate + ", missionsDistance="
 				+ missionsDistance + ", assignedSpaceShip=" + assignedSpaceShip + ", assignedCrew=" + assignedCrew
 				+ ", missionResult=" + missionResult + ", from=" + from + ", to=" + to + "]";
 	}
-	
+
 }

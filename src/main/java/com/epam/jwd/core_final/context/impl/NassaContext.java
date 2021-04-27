@@ -4,32 +4,41 @@ import com.epam.jwd.core_final.context.ApplicationContext;
 import com.epam.jwd.core_final.domain.ApplicationProperties;
 import com.epam.jwd.core_final.domain.BaseEntity;
 import com.epam.jwd.core_final.domain.CrewMember;
+import com.epam.jwd.core_final.domain.FlightMission;
+import com.epam.jwd.core_final.domain.MissionResult;
 import com.epam.jwd.core_final.domain.Planet;
 import com.epam.jwd.core_final.domain.Rank;
 import com.epam.jwd.core_final.domain.Role;
 import com.epam.jwd.core_final.domain.Spaceship;
 import com.epam.jwd.core_final.exception.InvalidStateException;
 import com.epam.jwd.core_final.factory.impl.CrewMemberFactory;
+import com.epam.jwd.core_final.factory.impl.FlightMissionFactory;
 import com.epam.jwd.core_final.factory.impl.SpaceshipFactory;
+import com.epam.jwd.core_final.service.SpacemapService;
 import com.epam.jwd.core_final.util.PropertyReaderUtil;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.ThreadLocalRandom;
 
 // todo
 public class NassaContext implements ApplicationContext {
 
 	// no getters/setters for them
-	private Collection<CrewMember> crewMembers = new ArrayList<>();
-	private Collection<Spaceship> spaceships = new ArrayList<>();
-	private Collection<Planet> planetMap = new ArrayList<>();
+	private List<CrewMember> crewMembers = new ArrayList<>();
+	private List<Spaceship> spaceships = new ArrayList<>();
+	private List<Planet> planetMap = new ArrayList<>();
+	private List<FlightMission> missions = new ArrayList<>();
 
 	private CrewMemberFactory crewMemberFactory = CrewMemberFactory.INSTANCE;
 	private SpaceshipFactory spaceshipFactory = SpaceshipFactory.INSTANCE;
@@ -47,19 +56,19 @@ public class NassaContext implements ApplicationContext {
 	}
 
 	@Override
-	public <T extends BaseEntity> Collection<T> retrieveBaseEntityList(Class<T> tClass) {
-		if (tClass == crewMembers.getClass()) {
-			return (Collection<T>) crewMembers;
-		} 
-		
-		if (tClass == spaceships.getClass()) {
-			return (Collection<T>) spaceships;
-		} 
-		
-		if (tClass == planetMap.getClass()) {
-			return (Collection<T>) planetMap;
-		} 
-		
+	public <T extends BaseEntity> List retrieveBaseEntityList(Class<T> tClass) {
+		if (CrewMember.class.isAssignableFrom(tClass)) {
+			return crewMembers;
+		}
+
+		if (Spaceship.class.isAssignableFrom(tClass)) {
+			return spaceships;
+		}
+
+		if (Planet.class.isAssignableFrom(tClass)) {
+			return planetMap;
+		}
+
 		return null;
 	}
 
@@ -75,7 +84,7 @@ public class NassaContext implements ApplicationContext {
 
 		readCrew(inputDir);
 		readShips(inputDir);
-		
+		writeMission();
 
 	}
 
@@ -143,7 +152,6 @@ public class NassaContext implements ApplicationContext {
 				}
 
 				ship = line.nextLine();
-				System.out.println(ship);
 			}
 			String[] charasteristics = ship.split(";");
 			name = charasteristics[0];
@@ -174,6 +182,30 @@ public class NassaContext implements ApplicationContext {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void writeMission() throws InvalidStateException {
+		System.out.println(this.retrieveBaseEntityList(Spaceship.class));
+		System.out.println(this.retrieveBaseEntityList(CrewMember.class));
+		System.out.println(this.retrieveBaseEntityList(Planet.class));
+		Scanner sc = new Scanner(System.in);
+		String name = sc.next();
+		Integer shipId = Integer.valueOf(sc.next());
+		Integer fromId = Integer.valueOf(sc.next());
+		Integer toId = Integer.valueOf(sc.next());
+		Spaceship ship = spaceships.stream().filter(sh -> sh.getId().equals(shipId)).findAny().get();
+		Planet from = planetMap.stream().filter(sh -> sh.getId().equals(fromId)).findAny().get();
+		Planet to = planetMap.stream().filter(sh -> sh.getId().equals(toId)).findAny().get();
+		MissionResult result = MissionResult.valueOf(sc.next());
+
+		LocalDate startDate = LocalDate.ofEpochDay(ThreadLocalRandom.current()
+				.longs(LocalDate.of(1990, 1, 1).toEpochDay(), LocalDate.now().toEpochDay()).findAny().getAsLong());
+		LocalDate endDate = LocalDate.ofEpochDay(ThreadLocalRandom.current()
+				.longs(startDate.toEpochDay(), LocalDate.now().toEpochDay()).findAny().getAsLong());
+		Long distance = new Random().nextLong();
+
+		missions.add(FlightMissionFactory.INSTANCE.create(name, startDate, endDate, distance, ship, from, to));
+
 	}
 
 }

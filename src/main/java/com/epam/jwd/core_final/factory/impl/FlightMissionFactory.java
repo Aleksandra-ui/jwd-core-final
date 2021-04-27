@@ -22,18 +22,15 @@ public enum FlightMissionFactory implements EntityFactory<FlightMission> {
 	public FlightMission create(Object... args) throws InvalidStateException {
 
 		try {
-			Long id = (Long) args[0];
-			String name = (String) args[1];
-			LocalDate startDate = (LocalDate) args[2];
-			LocalDate endDate = (LocalDate) args[3];
-			Long missionsDistance = (Long)args[4];
-			Spaceship assignedSpaceShip = (Spaceship)args[5];
-			List<CrewMember> assignedCrew = (List<CrewMember>)args[6];
-			MissionResult missionResult = (MissionResult)args[7];
-			Planet from = (Planet)args[8];
-			Planet to = (Planet)args[9];
-			return new FlightMission(id, name, startDate,endDate,missionsDistance,assignedSpaceShip,assignedCrew,
-					missionResult,from, to);
+			
+			String name = (String) args[0];
+			LocalDate startDate = (LocalDate) args[1];
+			LocalDate endDate = (LocalDate) args[2];
+			Long missionsDistance = (Long)args[3];
+			Spaceship assignedSpaceShip = (Spaceship)args[4];
+			Planet from = (Planet)args[5];
+			Planet to = (Planet)args[6];
+			return new FlightMission( name, startDate,endDate,missionsDistance,assignedSpaceShip,from, to);
 
 		} catch (ClassCastException | ArrayIndexOutOfBoundsException e) {
 			throw new InvalidStateException("Can not create a flight mission!");
