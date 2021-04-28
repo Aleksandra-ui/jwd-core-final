@@ -56,7 +56,7 @@ public enum SpaceshipServiceImpl implements SpaceshipService {
 	@Override
 	public Spaceship createSpaceship(Spaceship spaceship) throws RuntimeException {
 		// TODO Auto-generated method stub
-		return null;
+		return spaceship;
 	}
 
 }

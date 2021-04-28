@@ -17,6 +17,8 @@ public class Main {
 		logger.info("program started");
 
 		Application.start().printAvailableOptions().handleUserInput();
+		
+		logger.info("program ended");
 
 	}
 }

@@ -55,7 +55,7 @@ public enum CrewServiceImpl implements CrewService {
 
 	@Override
 	public CrewMember createCrewMember(CrewMember crewMember) throws RuntimeException {
-		return null;
+		return crewMember;
 	}
 
 }
