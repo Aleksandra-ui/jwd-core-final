@@ -12,7 +12,7 @@ public interface Application {
 	static ApplicationMenu start() throws InvalidStateException, FileNotFoundException, UnsupportedEncodingException {
 
 		final NassaContext nassaContext = NassaContext.newInstance();
-		final Supplier<ApplicationContext> applicationContextSupplier = () -> nassaContext; // todo
+		final Supplier<ApplicationContext> applicationContextSupplier = () -> nassaContext;
 
 		nassaContext.init();
 		return applicationContextSupplier::get;

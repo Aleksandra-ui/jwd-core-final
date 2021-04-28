@@ -20,12 +20,12 @@ public class CrewMemberCriteria extends Criteria<CrewMember> {
 		setFound(getFound().filter(e -> e.getRole().equals(role)));
 		return this;
 	}
-	
+
 	public Criteria<CrewMember> addRank(Rank rank) {
 		setFound(getFound().filter(e -> e.getRank().equals(rank)));
 		return this;
 	}
-	
+
 	public Criteria<CrewMember> addReadyForNextMissions(Boolean readyForNextMissions) {
 		setFound(getFound().filter(e -> e.getIsReadyForNextMissions().equals(readyForNextMissions)));
 		return this;

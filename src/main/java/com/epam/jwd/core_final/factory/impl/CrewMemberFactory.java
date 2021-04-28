@@ -1,5 +1,8 @@
 package com.epam.jwd.core_final.factory.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.epam.jwd.core_final.domain.CrewMember;
 import com.epam.jwd.core_final.domain.Rank;
 import com.epam.jwd.core_final.domain.Role;
@@ -11,6 +14,8 @@ public enum CrewMemberFactory implements EntityFactory<CrewMember> {
 
 	INSTANCE;
 
+	private static final Logger logger = LoggerFactory.getLogger(CrewMemberFactory.class);
+
 	@Override
 	public CrewMember create(Object... args) throws InvalidStateException {
 
@@ -19,6 +24,7 @@ public enum CrewMemberFactory implements EntityFactory<CrewMember> {
 			Role role = Role.resolveRoleById((Integer) args[1]);
 			String name = (String) args[2];
 			Rank rank = Rank.resolveRankById((Integer) args[3]);
+			logger.info("created new crew member");
 			return new CrewMember(id, role, name, rank);
 
 		} catch (ClassCastException | ArrayIndexOutOfBoundsException e) {

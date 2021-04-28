@@ -1,8 +1,7 @@
 package com.epam.jwd.core_final.context;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,13 +11,13 @@ import java.util.function.Supplier;
 
 import com.epam.jwd.core_final.context.impl.NassaContext;
 import com.epam.jwd.core_final.criteria.CrewMemberCriteria;
-import com.epam.jwd.core_final.criteria.Criteria;
+
 import com.epam.jwd.core_final.criteria.FlightMissionCriteria;
 import com.epam.jwd.core_final.criteria.SpaceshipCriteria;
 import com.epam.jwd.core_final.domain.CrewMember;
 import com.epam.jwd.core_final.domain.FlightMission;
 import com.epam.jwd.core_final.domain.MissionResult;
-import com.epam.jwd.core_final.domain.Planet;
+
 import com.epam.jwd.core_final.domain.Rank;
 import com.epam.jwd.core_final.domain.Role;
 import com.epam.jwd.core_final.domain.Spaceship;
@@ -48,9 +47,10 @@ public interface ApplicationMenu {
 				+ "to assign crew member on a mission,print 3 and crew member's id\n" + "to create a mission,print 4\n"
 				+ "print 5 to see all missions\n"
 				+ "to find a mission by criteria,print 6,criteria and its value(id,name,crew,spaceship,start_date,end_date,result,distance(for spaceship,crew members,from and to planets enter their ids,data format:year-month-day)\n"
-				+ "to assign a spaceship on a mission,print 7 and spaceship's id\n" 
+				+ "to assign a spaceship on a mission,print 7 and spaceship's id\n"
 				+ "to find a spaceship by criteria,print 8,criteria(id,name,crew,distance,ready_for_next_mission)and its value(for crew enter roles through comma)\n"
 				+ "print 9 to see all spaceships\n");
+
 		final NassaContext nassaContext = NassaContext.newInstance();
 		final Supplier<ApplicationContext> applicationContextSupplier = () -> nassaContext;
 
@@ -60,6 +60,7 @@ public interface ApplicationMenu {
 
 	default void handleUserInput() throws InvalidStateException, JsonMappingException, IOException {
 
+		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		switch (sc.next()) {
 		case "1":
@@ -162,7 +163,10 @@ public interface ApplicationMenu {
 							.addAssignedCrew(crew2));
 			break;
 		case "spaceship":
-			Spaceship ship = spaceshipService.findSpaceshipByCriteria(new SpaceshipCriteria(nassaContext.retrieveBaseEntityList(Spaceship.class).stream()).addId(Long.valueOf(value))).get();
+			Spaceship ship = spaceshipService.findSpaceshipByCriteria(
+					new SpaceshipCriteria(nassaContext.retrieveBaseEntityList(Spaceship.class).stream())
+							.addId(Long.valueOf(value)))
+					.get();
 			missions = missionService.findAllMissionsByCriteria(
 					new FlightMissionCriteria(nassaContext.retrieveBaseEntityList(FlightMission.class).stream())
 							.addAssignedSpaceship(ship));
@@ -186,7 +190,7 @@ public interface ApplicationMenu {
 					new FlightMissionCriteria(nassaContext.retrieveBaseEntityList(FlightMission.class).stream())
 							.addMissionsDistance(Long.valueOf(value)));
 			break;
-					
+
 		}
 		System.out.println(missions);
 

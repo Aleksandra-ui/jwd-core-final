@@ -1,13 +1,9 @@
 package com.epam.jwd.core_final.criteria;
 
 import java.util.List;
-import java.util.Map;
+
 import java.util.stream.Stream;
 
-import com.epam.jwd.core_final.domain.BaseEntity;
-import com.epam.jwd.core_final.domain.CrewMember;
-import com.epam.jwd.core_final.domain.FlightMission;
-import com.epam.jwd.core_final.domain.Role;
 import com.epam.jwd.core_final.domain.Spaceship;
 
 /**

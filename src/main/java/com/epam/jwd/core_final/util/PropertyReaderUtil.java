@@ -32,18 +32,17 @@ public final class PropertyReaderUtil {
 			e.printStackTrace();
 		}
 
-		String inputRootDir=properties.getProperty("inputRootDir");
-		String outputRootDir=properties.getProperty("outputRootDir");
-		String crewFileName=properties.getProperty("crewFileName");
-		String missionsFileName=properties.getProperty("missionsFileName");
-		String spaceshipsFileName=properties.getProperty("spaceshipsFileName");
-		Integer fileRefreshRate=Integer.valueOf(properties.getProperty("fileRefreshRate"));
-		String dateTimeFormat=properties.getProperty("dateTimeFormat");
-		String spacemapFileName=properties.getProperty("spacemapFileName");
+		String inputRootDir = properties.getProperty("inputRootDir");
+		String outputRootDir = properties.getProperty("outputRootDir");
+		String crewFileName = properties.getProperty("crewFileName");
+		String missionsFileName = properties.getProperty("missionsFileName");
+		String spaceshipsFileName = properties.getProperty("spaceshipsFileName");
+		Integer fileRefreshRate = Integer.valueOf(properties.getProperty("fileRefreshRate"));
+		String dateTimeFormat = properties.getProperty("dateTimeFormat");
+		String spacemapFileName = properties.getProperty("spacemapFileName");
 
-		
-		ApplicationProperties.newInstance(inputRootDir,outputRootDir,crewFileName,missionsFileName,
-				spaceshipsFileName,fileRefreshRate,dateTimeFormat,spacemapFileName);
+		ApplicationProperties.newInstance(inputRootDir, outputRootDir, crewFileName, missionsFileName,
+				spaceshipsFileName, fileRefreshRate, dateTimeFormat, spacemapFileName);
 
 	}
 }

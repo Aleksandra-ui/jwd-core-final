@@ -15,12 +15,12 @@ import com.epam.jwd.core_final.service.CrewService;
 public enum CrewServiceImpl implements CrewService {
 
 	INSTANCE;
-	
+
 	ApplicationContext context = NassaContext.newInstance();
 
 	@Override
 	public List<CrewMember> findAllCrewMembers() {
-		
+
 		return (List<CrewMember>) context.retrieveBaseEntityList(CrewMember.class);
 	}
 
@@ -33,7 +33,7 @@ public enum CrewServiceImpl implements CrewService {
 
 	@Override
 	public Optional<CrewMember> findCrewMemberByCriteria(Criteria<? extends CrewMember> criteria) {
-		List<CrewMember> crewMembers = findAllCrewMembers();
+
 		Optional<CrewMember> crewMember = (Optional<CrewMember>) criteria.find().findAny();
 		return crewMember;
 	}
@@ -47,8 +47,8 @@ public enum CrewServiceImpl implements CrewService {
 	@Override
 	public void assignCrewMemberOnMission(CrewMember crewMember) throws RuntimeException {
 		List<FlightMission> missions = NassaContext.newInstance().retrieveBaseEntityList(FlightMission.class);
-		if ( missions.size() != 0) {
-			FlightMission mission = missions.get(new Random().nextInt(missions.size()+1 ));
+		if (missions.size() != 0) {
+			FlightMission mission = missions.get(new Random().nextInt(missions.size() + 1));
 			mission.setAssignedCrewMember(crewMember);
 		}
 	}
@@ -57,5 +57,5 @@ public enum CrewServiceImpl implements CrewService {
 	public CrewMember createCrewMember(CrewMember crewMember) throws RuntimeException {
 		return null;
 	}
-	
+
 }

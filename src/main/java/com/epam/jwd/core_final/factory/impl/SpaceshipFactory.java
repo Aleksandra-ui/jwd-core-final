@@ -1,14 +1,11 @@
 package com.epam.jwd.core_final.factory.impl;
 
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
-import com.epam.jwd.core_final.domain.CrewMember;
-import com.epam.jwd.core_final.domain.FlightMission;
-import com.epam.jwd.core_final.domain.MissionResult;
-import com.epam.jwd.core_final.domain.Planet;
-import com.epam.jwd.core_final.domain.Rank;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 import com.epam.jwd.core_final.domain.Role;
 import com.epam.jwd.core_final.domain.Spaceship;
 import com.epam.jwd.core_final.exception.InvalidStateException;
@@ -19,6 +16,8 @@ public enum SpaceshipFactory implements EntityFactory<Spaceship> {
 
 	INSTANCE;
 
+	private static final Logger logger = LoggerFactory.getLogger(SpaceshipFactory.class);
+	
 	@Override
 	public Spaceship create(Object... args) throws InvalidStateException {
 
@@ -27,6 +26,7 @@ public enum SpaceshipFactory implements EntityFactory<Spaceship> {
 			String name = (String) args[1];
 			Map<Role, Short> crew = (Map<Role, Short>) args[2];
 			Long flightDistance = (Long) args[3];
+			logger.info("created new spaceship");
 			return new Spaceship(id, name, crew, flightDistance);
 
 		} catch (ClassCastException | ArrayIndexOutOfBoundsException e) {

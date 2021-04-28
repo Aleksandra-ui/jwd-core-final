@@ -14,9 +14,9 @@ import com.epam.jwd.core_final.domain.Spaceship;
 import com.epam.jwd.core_final.service.SpaceshipService;
 
 public enum SpaceshipServiceImpl implements SpaceshipService {
-	
+
 	INSTANCE;
-	
+
 	ApplicationContext context = NassaContext.newInstance();
 
 	@Override
@@ -33,7 +33,7 @@ public enum SpaceshipServiceImpl implements SpaceshipService {
 
 	@Override
 	public Optional<Spaceship> findSpaceshipByCriteria(Criteria<? extends Spaceship> criteria) {
-		List<Spaceship> spaceships = findAllSpaceships();
+
 		Optional<Spaceship> spaceship = (Optional<Spaceship>) criteria.find().findAny();
 		return spaceship;
 	}
@@ -47,7 +47,7 @@ public enum SpaceshipServiceImpl implements SpaceshipService {
 	@Override
 	public void assignSpaceshipOnMission(Spaceship spaceship) throws RuntimeException {
 		List<FlightMission> missions = NassaContext.newInstance().retrieveBaseEntityList(FlightMission.class);
-		if ( missions.size() != 0) {
+		if (missions.size() != 0) {
 			FlightMission mission = missions.get(new Random().nextInt(missions.size() + 1) - 1);
 			mission.setAssignedSpaceShip(spaceship);
 		}

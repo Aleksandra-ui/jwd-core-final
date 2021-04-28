@@ -46,7 +46,7 @@ public enum Role implements BaseEntity {
     		case 4:
     			return COMMANDER;
     		default:
-    			throw new UnknownEntityException("Required role does not exist!"); 
+    			throw new UnknownEntityException("role"); 
     	}
     	
     }

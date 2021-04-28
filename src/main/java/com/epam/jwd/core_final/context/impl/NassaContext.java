@@ -5,41 +5,43 @@ import com.epam.jwd.core_final.domain.ApplicationProperties;
 import com.epam.jwd.core_final.domain.BaseEntity;
 import com.epam.jwd.core_final.domain.CrewMember;
 import com.epam.jwd.core_final.domain.FlightMission;
-import com.epam.jwd.core_final.domain.MissionResult;
+
 import com.epam.jwd.core_final.domain.Planet;
-import com.epam.jwd.core_final.domain.Rank;
+
 import com.epam.jwd.core_final.domain.Role;
 import com.epam.jwd.core_final.domain.Spaceship;
 import com.epam.jwd.core_final.exception.InvalidStateException;
 import com.epam.jwd.core_final.factory.impl.CrewMemberFactory;
 import com.epam.jwd.core_final.factory.impl.FlightMissionFactory;
 import com.epam.jwd.core_final.factory.impl.SpaceshipFactory;
-import com.epam.jwd.core_final.service.SpacemapService;
+
+import com.epam.jwd.core_final.service.impl.MissionServiceImpl;
 import com.epam.jwd.core_final.util.PropertyReaderUtil;
-import com.fasterxml.jackson.core.JsonGenerationException;
+
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // todo
 public class NassaContext implements ApplicationContext {
@@ -52,6 +54,7 @@ public class NassaContext implements ApplicationContext {
 
 	private CrewMemberFactory crewMemberFactory = CrewMemberFactory.INSTANCE;
 	private SpaceshipFactory spaceshipFactory = SpaceshipFactory.INSTANCE;
+	private static final Logger logger = LoggerFactory.getLogger(NassaContext.class);
 
 	private static NassaContext instance;
 
@@ -68,18 +71,22 @@ public class NassaContext implements ApplicationContext {
 	@Override
 	public <T extends BaseEntity> List retrieveBaseEntityList(Class<T> tClass) {
 		if (CrewMember.class.isAssignableFrom(tClass)) {
+			logger.info("printed list of crew members");
 			return crewMembers;
 		}
 
 		if (Spaceship.class.isAssignableFrom(tClass)) {
+			logger.info("printed list of spaceships");
 			return spaceships;
 		}
 
 		if (Planet.class.isAssignableFrom(tClass)) {
+			logger.info("printed list of planets");
 			return planetMap;
 		}
-		
+
 		if (FlightMission.class.isAssignableFrom(tClass)) {
+			logger.info("printed list of flight missions");
 			return missions;
 		}
 
@@ -90,8 +97,8 @@ public class NassaContext implements ApplicationContext {
 	 * You have to read input files, populate collections
 	 * 
 	 * @throws InvalidStateException
-	 * @throws UnsupportedEncodingException 
-	 * @throws FileNotFoundException 
+	 * @throws UnsupportedEncodingException
+	 * @throws FileNotFoundException
 	 */
 	@Override
 	public void init() throws InvalidStateException, FileNotFoundException, UnsupportedEncodingException {
@@ -99,7 +106,9 @@ public class NassaContext implements ApplicationContext {
 		String inputDir = ApplicationProperties.getInstance().getInputRootDir();
 
 		readCrew(inputDir);
+		logger.info("crew members read from file");
 		readShips(inputDir);
+		logger.info("spaceships read from file");
 
 	}
 
@@ -109,7 +118,7 @@ public class NassaContext implements ApplicationContext {
 		long i = 1;
 
 		try {
-			
+
 			String crew = new String(Files.readAllBytes(Paths.get(inputDir + "/" + crewFileName)),
 					StandardCharsets.UTF_8);
 			Scanner in = new Scanner(crew);
@@ -136,14 +145,16 @@ public class NassaContext implements ApplicationContext {
 		long id = 1;
 		String name;
 		Long distance;
-		Scanner word;
+
 		String[] members;
 		Map<Role, Short> crew;
 		Spaceship spaceship;
+		String[] charasteristics;
 
 		try {
 			String ships = new String(Files.readAllBytes(Paths.get(inputDir + "/" + shipsFileName)),
 					StandardCharsets.UTF_8);
+			@SuppressWarnings("resource")
 			Scanner line = new Scanner(ships);
 			line.nextLine();
 			line.nextLine();
@@ -151,7 +162,7 @@ public class NassaContext implements ApplicationContext {
 			String ship = line.nextLine();
 
 			while (line.hasNextLine()) {
-				String[] charasteristics = ship.split(";");
+				charasteristics = ship.split(";");
 				name = charasteristics[0];
 				distance = Long.valueOf(charasteristics[1]);
 				members = charasteristics[2].substring(1, charasteristics[2].length() - 1).split(",");
@@ -160,16 +171,13 @@ public class NassaContext implements ApplicationContext {
 					crew.put(Role.resolveRoleById(Integer.valueOf(member.substring(0, 1))),
 							Short.valueOf(member.substring(2, 3)));
 				}
-				try {
-					spaceship = spaceshipFactory.create(id++, name, crew, distance);
-					spaceships.add(spaceship);
-				} catch (InvalidStateException e) {
-					e.printStackTrace();
-				}
+
+				spaceship = spaceshipFactory.create(id++, name, crew, distance);
+				spaceships.add(spaceship);
 
 				ship = line.nextLine();
 			}
-			String[] charasteristics = ship.split(";");
+			charasteristics = ship.split(";");
 			name = charasteristics[0];
 			distance = Long.valueOf(charasteristics[1]);
 			members = charasteristics[2].substring(1, charasteristics[2].length() - 1).split(",");
@@ -181,7 +189,7 @@ public class NassaContext implements ApplicationContext {
 			spaceship = new Spaceship(id++, name, crew, distance);
 			spaceships.add(spaceship);
 
-		} catch (IOException e) {
+		} catch (IOException | InvalidStateException e) {
 			e.printStackTrace();
 
 		}
@@ -205,11 +213,11 @@ public class NassaContext implements ApplicationContext {
 		System.out.println(this.retrieveBaseEntityList(CrewMember.class));
 		System.out.println(this.retrieveBaseEntityList(Planet.class));
 		System.out.println("enter mission's name,spaceship's id and flightmission status");
+		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		String name = sc.next();
 		Long shipId = Long.valueOf(sc.next());
 		Spaceship ship = spaceships.stream().filter(sh -> sh.getId().equals(shipId)).findAny().get();
-		MissionResult result = MissionResult.valueOf(sc.next());
 
 		LocalDate startDate = LocalDate.ofEpochDay(ThreadLocalRandom.current()
 				.longs(LocalDate.of(1990, 1, 1).toEpochDay(), LocalDate.now().toEpochDay()).findAny().getAsLong());
@@ -217,26 +225,32 @@ public class NassaContext implements ApplicationContext {
 				.longs(startDate.toEpochDay(), LocalDate.now().toEpochDay()).findAny().getAsLong());
 		Long distance = new Random().nextLong();
 
-		FlightMission mission = FlightMissionFactory.INSTANCE.create(name, startDate, endDate, distance, ship);
+		FlightMission mission = MissionServiceImpl.INSTANCE
+				.createMission(FlightMissionFactory.INSTANCE.create(name, startDate, endDate, distance, ship));
+
 		addMissionToFile(mission);
-		missions.add(mission);
+		logger.info("new mission added to file");
 
 	}
-	
-	private void addMissionToFile(FlightMission mission) throws JsonMappingException, IOException {
-		
+
+	private void addMissionToFile(FlightMission mission) throws JsonMappingException {
+
 		String outputDir = ApplicationProperties.getInstance().getOutputRootDir();
 		String missionsFileName = ApplicationProperties.getInstance().getMissionsFileName();
-		
-		PrintWriter writer = new PrintWriter(outputDir+ "/" +missionsFileName+".txt", "UTF-8");
-		ObjectMapper om = new ObjectMapper();
-		//writer.append(om.writeValueAsString(mission));
-		File f = new File(outputDir+ "/" +missionsFileName+".txt");
-		om.writeValue(f, mission);
-		
 
-		writer.close();
-		
+		ObjectMapper om = new ObjectMapper();
+
+		try (FileWriter writer = new FileWriter(outputDir + "/" + missionsFileName + ".txt", true)) {
+
+			writer.write(om.writeValueAsString(mission));
+
+			writer.flush();
+		} catch (IOException ex) {
+
+			System.out.println(ex.getMessage());
+		}
+		missions.add(mission);
+
 	}
 
 }
