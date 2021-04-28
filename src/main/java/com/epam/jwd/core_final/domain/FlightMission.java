@@ -1,6 +1,7 @@
 package com.epam.jwd.core_final.domain;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,21 +19,19 @@ public class FlightMission extends AbstractBaseEntity {
 	private final LocalDate startDate;
 	private final LocalDate endDate;
 	private final Long missionsDistance;
-	private final Spaceship assignedSpaceShip;
+	private Spaceship assignedSpaceShip;
 	private List<CrewMember> assignedCrew;
 	private MissionResult missionResult;
-	private final Planet from;
-	private final Planet to;
+	private Planet from;
+	private Planet to;
 
 	public FlightMission(String name, LocalDate startDate, LocalDate endDate, long missionsDistance,
-			Spaceship assignedSpaceShip, Planet from, Planet to) {
+			Spaceship assignedSpaceShip) {
 		super(name);
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.missionsDistance = missionsDistance;
 		this.assignedSpaceShip = assignedSpaceShip;
-		this.from = from;
-		this.to = to;
 	}
 
 	public LocalDate getStartDate() {
@@ -43,12 +42,16 @@ public class FlightMission extends AbstractBaseEntity {
 		return endDate;
 	}
 
-	public long getMissionsDistance() {
+	public Long getMissionsDistance() {
 		return missionsDistance;
 	}
 
 	public Spaceship getAssignedSpaceShip() {
 		return assignedSpaceShip;
+	}
+	
+	public void setAssignedSpaceShip(Spaceship spaceShip) {
+		assignedSpaceShip = spaceShip;
 	}
 
 	public List<CrewMember> getAssignedCrew() {
@@ -69,6 +72,13 @@ public class FlightMission extends AbstractBaseEntity {
 
 	public void setAssignedCrew(List<CrewMember> assignedCrew) {
 		this.assignedCrew = assignedCrew;
+	}
+	
+	public void setAssignedCrewMember(CrewMember assignedCrewMember) {
+		if (this.assignedCrew == null) {
+			assignedCrew = new ArrayList<>();
+		}
+		assignedCrew.add(assignedCrewMember);
 	}
 
 	public void setMissionResult(MissionResult missionResult) {
@@ -138,7 +148,7 @@ public class FlightMission extends AbstractBaseEntity {
 
 	@Override
 	public String toString() {
-		return "FlightMission [startDate=" + startDate + ", endDate=" + endDate + ", missionsDistance="
+		return "FlightMission [id=" + getId() + ", name=" + getName() + "startDate=" + startDate + ", endDate=" + endDate + ", missionsDistance="
 				+ missionsDistance + ", assignedSpaceShip=" + assignedSpaceShip + ", assignedCrew=" + assignedCrew
 				+ ", missionResult=" + missionResult + ", from=" + from + ", to=" + to + "]";
 	}

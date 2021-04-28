@@ -28,9 +28,8 @@ public enum FlightMissionFactory implements EntityFactory<FlightMission> {
 			LocalDate endDate = (LocalDate) args[2];
 			Long missionsDistance = (Long)args[3];
 			Spaceship assignedSpaceShip = (Spaceship)args[4];
-			Planet from = (Planet)args[5];
-			Planet to = (Planet)args[6];
-			return new FlightMission( name, startDate,endDate,missionsDistance,assignedSpaceShip,from, to);
+			
+			return new FlightMission( name, startDate,endDate,missionsDistance,assignedSpaceShip);
 
 		} catch (ClassCastException | ArrayIndexOutOfBoundsException e) {
 			throw new InvalidStateException("Can not create a flight mission!");

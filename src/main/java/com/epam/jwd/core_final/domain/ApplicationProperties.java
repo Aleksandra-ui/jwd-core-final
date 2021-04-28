@@ -23,6 +23,7 @@ public class ApplicationProperties {
 	private String dateTimeFormat;
 	private String spacemapFileName;
 
+
 	static ApplicationProperties instance;
 
 	private ApplicationProperties(String inputRootDir, String outputRootDir, String crewFileName,
@@ -36,6 +37,7 @@ public class ApplicationProperties {
 		this.outputRootDir = outputRootDir;
 		this.spaceshipsFileName = spaceshipsFileName;
 		this.spacemapFileName = spacemapFileName;
+
 
 	}
 

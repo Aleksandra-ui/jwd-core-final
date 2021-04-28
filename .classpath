@@ -14,5 +14,10 @@
 	</classpathentry>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="lib" path="gradle/wrapper/gradle-wrapper.jar"/>
+	<classpathentry kind="lib" path="Q:/new-workspace/jwd-core-final/src/lib/slf4j-api-1.7.30.jar"/>
+	<classpathentry kind="lib" path="Q:/new-workspace/jwd-core-final/src/lib/slf4j-jdk14-1.7.30.jar"/>
+	<classpathentry kind="lib" path="Q:/new-workspace/jwd-core-final/src/lib/jackson-core-2.0.1.jar"/>
+	<classpathentry kind="lib" path="Q:/new-workspace/jwd-core-final/src/lib/jackson-annotations-2.0.1.jar"/>
+	<classpathentry kind="lib" path="Q:/new-workspace/jwd-core-final/src/lib/jackson-databind-2.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -3,12 +3,14 @@ package com.epam.jwd.core_final.context;
 import com.epam.jwd.core_final.domain.BaseEntity;
 import com.epam.jwd.core_final.exception.InvalidStateException;
 
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public interface ApplicationContext {
 
 	<T extends BaseEntity> List retrieveBaseEntityList(Class<T> tClass);
 
-	void init() throws InvalidStateException;
+	void init() throws InvalidStateException, FileNotFoundException, UnsupportedEncodingException;
 
 }

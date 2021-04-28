@@ -18,3 +18,5 @@ dependencies {
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.9.0'
     
 }
+
+war.from('src/main/resources'){ include('pom.xml')}
