@@ -1,7 +1,6 @@
 package com.epam.jwd.core_final;
 
 import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +16,7 @@ public class Main {
 		logger.info("program started");
 
 		Application.start().printAvailableOptions().handleUserInput();
-		
+
 		logger.info("program ended");
 
 	}

@@ -46,7 +46,7 @@ public class Planet extends AbstractBaseEntity {
 
 	@Override
 	public String toString() {
-		return "Planet [location=" + location + "]";
+		return "Planet [id=" + getId() + ", name=" + getName() + ", location=" + location + "]";
 	}
 
 }

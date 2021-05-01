@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.function.Supplier;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.epam.jwd.core_final.context.impl.NassaContext;
 import com.epam.jwd.core_final.criteria.CrewMemberCriteria;
 
@@ -35,9 +38,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 public interface ApplicationMenu {
 
 	static final NassaContext nassaContext = NassaContext.newInstance();
-	static final CrewService crewService = CrewServiceImpl.INSTANCE;
+	static final CrewService crewService = CrewServiceImpl.newInstance();
 	static final SpaceshipService spaceshipService = SpaceshipServiceImpl.INSTANCE;
 	static final MissionService missionService = MissionServiceImpl.INSTANCE;
+	
+	static final Logger logger = LoggerFactory.getLogger(ApplicationMenu.class);
 
 	ApplicationContext getApplicationContext();
 
@@ -65,6 +70,7 @@ public interface ApplicationMenu {
 		switch (sc.next()) {
 		case "1":
 			System.out.println(nassaContext.retrieveBaseEntityList(CrewMember.class));
+			logger.info("printed list of crew members");
 			break;
 		case "2":
 			printCrewMembersByCriteria(sc.next(), sc.next());
@@ -81,6 +87,7 @@ public interface ApplicationMenu {
 			break;
 		case "5":
 			System.out.println(nassaContext.retrieveBaseEntityList(FlightMission.class));
+			logger.info("printed list of flight missions");
 			break;
 		case "6":
 			printMissionsByCriteria(sc.next(), sc.next());
@@ -97,6 +104,7 @@ public interface ApplicationMenu {
 			break;
 		case "9":
 			System.out.println(nassaContext.retrieveBaseEntityList(Spaceship.class));
+			logger.info("printed list of spaceships");
 			break;
 		}
 	}

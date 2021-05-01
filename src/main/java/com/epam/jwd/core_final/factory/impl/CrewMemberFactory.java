@@ -28,7 +28,7 @@ public enum CrewMemberFactory implements EntityFactory<CrewMember> {
 			return new CrewMember(id, role, name, rank);
 
 		} catch (ClassCastException | ArrayIndexOutOfBoundsException e) {
-			throw new InvalidStateException("Can not create a crew member!");
+			throw new InvalidStateException("crew member");
 		}
 
 	}

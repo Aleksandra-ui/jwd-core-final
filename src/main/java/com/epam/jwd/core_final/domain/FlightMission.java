@@ -16,7 +16,17 @@ import java.util.List;
  */
 public class FlightMission extends AbstractBaseEntity {
 
+	/*
+	 * @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+	 * 
+	 * @JsonSerialize(using = LocalDateTimeSerializer.class)
+	 */
 	private final LocalDate startDate;
+	/*
+	 * @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+	 * 
+	 * @JsonSerialize(using = LocalDateTimeSerializer.class)
+	 */
 	private final LocalDate endDate;
 	private final Long missionsDistance;
 	private Spaceship assignedSpaceShip;
@@ -25,13 +35,14 @@ public class FlightMission extends AbstractBaseEntity {
 	private Planet from;
 	private Planet to;
 
-	public FlightMission(String name, LocalDate startDate, LocalDate endDate, long missionsDistance,
-			Spaceship assignedSpaceShip) {
+	public FlightMission(String name, LocalDate startDate, LocalDate endDate, Long missionsDistance,
+			Spaceship assignedSpaceShip, MissionResult missionResult) {
 		super(name);
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.missionsDistance = missionsDistance;
 		this.assignedSpaceShip = assignedSpaceShip;
+		this.missionResult = missionResult;
 	}
 
 	public LocalDate getStartDate() {
@@ -49,7 +60,7 @@ public class FlightMission extends AbstractBaseEntity {
 	public Spaceship getAssignedSpaceShip() {
 		return assignedSpaceShip;
 	}
-	
+
 	public void setAssignedSpaceShip(Spaceship spaceShip) {
 		assignedSpaceShip = spaceShip;
 	}
@@ -73,7 +84,7 @@ public class FlightMission extends AbstractBaseEntity {
 	public void setAssignedCrew(List<CrewMember> assignedCrew) {
 		this.assignedCrew = assignedCrew;
 	}
-	
+
 	public void setAssignedCrewMember(CrewMember assignedCrewMember) {
 		if (this.assignedCrew == null) {
 			assignedCrew = new ArrayList<>();
@@ -148,9 +159,10 @@ public class FlightMission extends AbstractBaseEntity {
 
 	@Override
 	public String toString() {
-		return "FlightMission [id=" + getId() + ", name=" + getName() + "startDate=" + startDate + ", endDate=" + endDate + ", missionsDistance="
-				+ missionsDistance + ", assignedSpaceShip=" + assignedSpaceShip + ", assignedCrew=" + assignedCrew
-				+ ", missionResult=" + missionResult + ", from=" + from + ", to=" + to + "]";
+		return "FlightMission [id=" + getId() + ", name=" + getName() + "startDate=" + startDate + ", endDate="
+				+ endDate + ", missionsDistance=" + missionsDistance + ", assignedSpaceShip=" + assignedSpaceShip
+				+ ", assignedCrew=" + assignedCrew + ", missionResult=" + missionResult + ", from=" + from + ", to="
+				+ to + "]";
 	}
 
 }

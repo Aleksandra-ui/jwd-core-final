@@ -24,7 +24,14 @@ public final class PropertyReaderUtil {
 	 *      corresponding values from property file
 	 */
 	public static void loadProperties() {
+		
 		final String propertiesFileName = "src/main/resources/application.properties";
+		
+		try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("logger.properties")){
+			properties.load(is);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 
 		try (InputStream iStream = new FileInputStream(propertiesFileName)) {
 			properties.load(iStream);

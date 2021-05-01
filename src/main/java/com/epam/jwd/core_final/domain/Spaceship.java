@@ -34,7 +34,7 @@ public class Spaceship extends AbstractBaseEntity {
 		return isReadyForNextMissions;
 	}
 
-	public void setIsReadyForNextMissions(Boolean IsReadyForNextMissions) {
+	public void setIsReadyForNextMissions(Boolean isReadyForNextMissions) {
 		this.isReadyForNextMissions = isReadyForNextMissions;
 	}
 

@@ -25,5 +25,7 @@
 	<classpathentry kind="lib" path="Q:/new-workspace/jwd-core-final/src/lib/objenesis-3.1.jar"/>
 	<classpathentry kind="lib" path="Q:/new-workspace/jwd-core-final/src/lib/org.hamcrest.core_1.3.0.v20180420-1519.jar"/>
 	<classpathentry kind="lib" path="Q:/new-workspace/jwd-core-final/src/lib/org.junit_4.13.0.v20200204-1500.jar"/>
+	<classpathentry kind="lib" path="Q:/new-workspace/jwd-core-final/src/lib/jackson-datatype-jsr310-2.2.0-beta1.jar"/>
+	<classpathentry kind="lib" path="Q:/new-workspace/jwd-core-final/src/lib/jackson-datatype-jsr310-2.7.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

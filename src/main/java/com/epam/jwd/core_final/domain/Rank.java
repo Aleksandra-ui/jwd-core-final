@@ -46,7 +46,7 @@ public enum Rank implements BaseEntity {
 		case 4:
 			return  CAPTAIN;
 		default:
-			throw new UnknownEntityException("Required rank does not exist!"); 
+			throw new UnknownEntityException("rank"); 
 	}
     }
 }

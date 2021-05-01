@@ -30,7 +30,7 @@ public enum SpaceshipFactory implements EntityFactory<Spaceship> {
 			return new Spaceship(id, name, crew, flightDistance);
 
 		} catch (ClassCastException | ArrayIndexOutOfBoundsException e) {
-			throw new InvalidStateException("Can not create a flight mission!");
+			throw new InvalidStateException("spaceship");
 		}
 
 	}

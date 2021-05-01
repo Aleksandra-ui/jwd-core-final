@@ -10,11 +10,25 @@ import com.epam.jwd.core_final.context.impl.NassaContext;
 import com.epam.jwd.core_final.criteria.Criteria;
 import com.epam.jwd.core_final.domain.CrewMember;
 import com.epam.jwd.core_final.domain.FlightMission;
+import com.epam.jwd.core_final.domain.MissionResult;
+import com.epam.jwd.core_final.domain.Role;
+import com.epam.jwd.core_final.domain.Spaceship;
+import com.epam.jwd.core_final.exception.InvalidOperationException;
 import com.epam.jwd.core_final.service.CrewService;
 
-public enum CrewServiceImpl implements CrewService {
+public class CrewServiceImpl implements CrewService {
 
-	INSTANCE;
+	private static CrewServiceImpl instance;
+
+	private CrewServiceImpl() {
+	}
+
+	public static CrewServiceImpl newInstance() {
+		if (instance == null) {
+			instance = new CrewServiceImpl();
+		}
+		return instance;
+	}
 
 	ApplicationContext context = NassaContext.newInstance();
 
@@ -45,11 +59,40 @@ public enum CrewServiceImpl implements CrewService {
 	}
 
 	@Override
-	public void assignCrewMemberOnMission(CrewMember crewMember) throws RuntimeException {
+	public void assignCrewMemberOnMission(CrewMember crewMember) throws InvalidOperationException {
+		
+		if (! crewMember.getIsReadyForNextMissions()) {
+			throw new InvalidOperationException("Can not assign the crew member on a mission, because he is not ready for next missions!");
+		}
 		List<FlightMission> missions = NassaContext.newInstance().retrieveBaseEntityList(FlightMission.class);
 		if (missions.size() != 0) {
-			FlightMission mission = missions.get(new Random().nextInt(missions.size() + 1));
-			mission.setAssignedCrewMember(crewMember);
+			
+			FlightMission mission;
+			Spaceship spaceship;
+			Short maxCount;
+			
+			while(!missions.isEmpty()){
+				mission = missions.get(new Random().nextInt(missions.size() + 1));
+				spaceship=mission.getAssignedSpaceShip();
+				final Role role=crewMember.getRole();
+				
+				if (!spaceship.getCrew().keySet().contains(role)) {
+					missions.remove(mission);
+					continue;
+				}
+				
+				maxCount = spaceship.getCrew().get(role);
+				if ( mission.getAssignedCrew().stream().filter(m -> role.equals(m.getRole())).count() < maxCount ) {
+					mission.setAssignedCrewMember(crewMember);
+					if ( mission.getMissionResult().equals(MissionResult.FAILED)) {
+						updateCrewMemberDetails(crewMember);
+					}
+					break;
+				} else {
+					missions.remove(mission);
+				}
+			}
+			
 		}
 	}
 

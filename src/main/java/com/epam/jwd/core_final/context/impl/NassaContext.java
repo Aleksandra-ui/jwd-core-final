@@ -5,7 +5,7 @@ import com.epam.jwd.core_final.domain.ApplicationProperties;
 import com.epam.jwd.core_final.domain.BaseEntity;
 import com.epam.jwd.core_final.domain.CrewMember;
 import com.epam.jwd.core_final.domain.FlightMission;
-
+import com.epam.jwd.core_final.domain.MissionResult;
 import com.epam.jwd.core_final.domain.Planet;
 
 import com.epam.jwd.core_final.domain.Role;
@@ -20,12 +20,9 @@ import com.epam.jwd.core_final.util.PropertyReaderUtil;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.FileNotFoundException;
-
 import java.io.FileWriter;
 import java.io.IOException;
-
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -71,22 +68,18 @@ public class NassaContext implements ApplicationContext {
 	@Override
 	public <T extends BaseEntity> List retrieveBaseEntityList(Class<T> tClass) {
 		if (CrewMember.class.isAssignableFrom(tClass)) {
-			logger.info("printed list of crew members");
 			return crewMembers;
 		}
 
 		if (Spaceship.class.isAssignableFrom(tClass)) {
-			logger.info("printed list of spaceships");
 			return spaceships;
 		}
 
 		if (Planet.class.isAssignableFrom(tClass)) {
-			logger.info("printed list of planets");
 			return planetMap;
 		}
 
 		if (FlightMission.class.isAssignableFrom(tClass)) {
-			logger.info("printed list of flight missions");
 			return missions;
 		}
 
@@ -104,15 +97,18 @@ public class NassaContext implements ApplicationContext {
 	public void init() throws InvalidStateException, FileNotFoundException, UnsupportedEncodingException {
 		PropertyReaderUtil.loadProperties();
 		String inputDir = ApplicationProperties.getInstance().getInputRootDir();
+		String outputDir = ApplicationProperties.getInstance().getOutputRootDir();
 
 		readCrew(inputDir);
 		logger.info("crew members read from file");
 		readShips(inputDir);
 		logger.info("spaceships read from file");
+		readMissions(outputDir);
+		logger.info("missions read from file");
 
 	}
 
-	private void readCrew(String inputDir) throws NumberFormatException, InvalidStateException {
+	private void readCrew(String inputDir) throws NumberFormatException {
 
 		String crewFileName = ApplicationProperties.getInstance().getCrewFileName();
 		long i = 1;
@@ -121,11 +117,13 @@ public class NassaContext implements ApplicationContext {
 
 			String crew = new String(Files.readAllBytes(Paths.get(inputDir + "/" + crewFileName)),
 					StandardCharsets.UTF_8);
+			@SuppressWarnings("resource")
 			Scanner in = new Scanner(crew);
 			in.nextLine();
 			String crew2 = in.nextLine();
 			String[] members = crew2.split(";");
 			for (String member : members) {
+				@SuppressWarnings("resource")
 				Scanner sc = new Scanner(member);
 				sc.useDelimiter(",");
 				crewMembers.add(crewMemberFactory.create(i++, Integer.valueOf(sc.next()), sc.next(),
@@ -133,7 +131,7 @@ public class NassaContext implements ApplicationContext {
 
 			}
 
-		} catch (IOException e) {
+		} catch (IOException | InvalidStateException e) {
 			e.printStackTrace();
 		}
 
@@ -186,7 +184,7 @@ public class NassaContext implements ApplicationContext {
 				crew.put(Role.resolveRoleById(Integer.valueOf(member.substring(0, 1))),
 						Short.valueOf(member.substring(2, 3)));
 			}
-			spaceship = new Spaceship(id++, name, crew, distance);
+			spaceship = spaceshipFactory.create(id++, name, crew, distance);
 			spaceships.add(spaceship);
 
 		} catch (IOException | InvalidStateException e) {
@@ -208,15 +206,29 @@ public class NassaContext implements ApplicationContext {
 		}
 	}
 
+	private void readMissions(String outputDir) {
+
+		String missionsFileName = ApplicationProperties.getInstance().getMissionsFileName();
+
+		/*
+		 * try { ObjectMapper mapper = new ObjectMapper(); mapper.registerModule(new
+		 * JavaTimeModule()); File is = new File(outputDir + "/"
+		 * +missionsFileName+".json"); FlightMission testObj = mapper.readValue(is,
+		 * FlightMission.class); missions.add(testObj); } catch (IOException e) {
+		 * e.printStackTrace(); }
+		 */
+	}
+
 	public void writeMission() throws InvalidStateException, JsonMappingException, IOException {
-		System.out.println(this.retrieveBaseEntityList(Spaceship.class));
-		System.out.println(this.retrieveBaseEntityList(CrewMember.class));
-		System.out.println(this.retrieveBaseEntityList(Planet.class));
+		System.out.println("avaliable spaceships:\n" + this.retrieveBaseEntityList(Spaceship.class));
+		System.out.println("avaliable crew members:\n" + this.retrieveBaseEntityList(CrewMember.class));
+		System.out.println("avaliable planets:\n" + this.retrieveBaseEntityList(Planet.class));
 		System.out.println("enter mission's name,spaceship's id and flightmission status");
 		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		String name = sc.next();
 		Long shipId = Long.valueOf(sc.next());
+		MissionResult result = MissionResult.valueOf((sc.next()));
 		Spaceship ship = spaceships.stream().filter(sh -> sh.getId().equals(shipId)).findAny().get();
 
 		LocalDate startDate = LocalDate.ofEpochDay(ThreadLocalRandom.current()
@@ -226,21 +238,21 @@ public class NassaContext implements ApplicationContext {
 		Long distance = new Random().nextLong();
 
 		FlightMission mission = MissionServiceImpl.INSTANCE
-				.createMission(FlightMissionFactory.INSTANCE.create(name, startDate, endDate, distance, ship));
+				.createMission(FlightMissionFactory.INSTANCE.create(name, startDate, endDate, distance, ship, result));
 
 		addMissionToFile(mission);
 		logger.info("new mission added to file");
 
 	}
 
-	private void addMissionToFile(FlightMission mission) throws JsonMappingException {
+	private void addMissionToFile(FlightMission mission) {
 
 		String outputDir = ApplicationProperties.getInstance().getOutputRootDir();
 		String missionsFileName = ApplicationProperties.getInstance().getMissionsFileName();
 
 		ObjectMapper om = new ObjectMapper();
 
-		try (FileWriter writer = new FileWriter(outputDir + "/" + missionsFileName + ".txt", true)) {
+		try (FileWriter writer = new FileWriter(outputDir + "/" + missionsFileName + ".json", true)) {
 
 			writer.write(om.writeValueAsString(mission));
 

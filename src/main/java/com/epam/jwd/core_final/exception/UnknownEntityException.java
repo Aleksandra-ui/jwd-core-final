@@ -2,7 +2,8 @@ package com.epam.jwd.core_final.exception;
 
 public class UnknownEntityException extends RuntimeException {
 
-    private final String entityName;
+	private static final long serialVersionUID = -6196537801005288073L;
+	private final String entityName;
     private final Object[] args;
 
     public UnknownEntityException(String entityName) {

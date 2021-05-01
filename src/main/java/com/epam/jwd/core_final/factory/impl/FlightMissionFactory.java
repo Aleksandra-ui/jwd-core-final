@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.epam.jwd.core_final.domain.FlightMission;
-
+import com.epam.jwd.core_final.domain.MissionResult;
 import com.epam.jwd.core_final.domain.Spaceship;
 import com.epam.jwd.core_final.exception.InvalidStateException;
 import com.epam.jwd.core_final.factory.EntityFactory;
@@ -29,11 +29,12 @@ public enum FlightMissionFactory implements EntityFactory<FlightMission> {
 			LocalDate endDate = (LocalDate) args[2];
 			Long missionsDistance = (Long)args[3];
 			Spaceship assignedSpaceShip = (Spaceship)args[4];
+			MissionResult missionResult = (MissionResult)args[5];
 			logger.info("created new flight mission");
-			return new FlightMission( name, startDate,endDate,missionsDistance,assignedSpaceShip);
+			return new FlightMission( name, startDate,endDate,missionsDistance,assignedSpaceShip,missionResult);
 
 		} catch (ClassCastException | ArrayIndexOutOfBoundsException e) {
-			throw new InvalidStateException("Can not create a flight mission!");
+			throw new InvalidStateException("flight mission");
 		}
 
 	}
